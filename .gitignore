@@ -8,3 +8,13 @@ volumio-plugins.iml
 
 # Ignore all node_modules in all sub dirs
 node_modules/
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/$PRODUCT_WORKSPACE_FILE$
+/.idea/deployment.xml
+/.idea/dictionaries
+/.idea/php.xml
+/.idea/terminal.xml
+/.idea/vagrant.xml
+/.idea/webServers.xml

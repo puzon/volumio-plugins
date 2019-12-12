@@ -3,5 +3,34 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
+    {
+      "id": "section_account",
+      "element": "section",
+      "label": "Spotify account",
+      "icon": "fa-plug",
+      "onSave": {
+        "type": "controller",
+        "endpoint": "music_service/spop",
+        "method": "saveSpotifyAccount"
+      },
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "username",
+          "password",
+          "bitrate"
+        ]
+      },
+      "content": [
+        {
+          "id": "username",
+          "type": "text",
+          "element": "input",
+          "doc": "This is the username of your Spotify account",
+          "label": "Username",
+          "value": ""
+        }
+      ]
+    }
   ]
 }
