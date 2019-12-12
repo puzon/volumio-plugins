@@ -1,4 +1,5 @@
 {
-  "PLUGIN_CONFIGURATION":"Example Plugin Configuration",
-  "SAVE":"Save"
+  "PLUGIN_CONFIGURATION":"IR Extended plugin configuration",
+  "SAVE":"Save",
+  "SET_PROFILE":"Set this profile"
 }

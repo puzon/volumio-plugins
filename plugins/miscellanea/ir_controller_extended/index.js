@@ -64,14 +64,27 @@ irControllerExtended.prototype.getUIConfig = function() {
     var self = this;
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
+	var dirs = fs.readdirSync(__dirname + "/configurations");
+	console.log("GET UI");
+	self.logger.info("GET UI");
 
-    self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+
+	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
         .then(function(uiconf)
         {
 
+			var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
+			uiconf.sections[0].content[0].value.value = activeProfile;
+			uiconf.sections[0].content[0].value.label = activeProfile;
 
+			for (var i = 0; i < dirs.length; i++) {
+				self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+					value: dirs[i],
+					label: dirs[i]
+				});
+			}
             defer.resolve(uiconf);
         })
         .fail(function()
@@ -102,166 +115,3 @@ irControllerExtended.prototype.setConf = function(varName, varValue) {
 };
 
 
-
-// Playback Controls ---------------------------------------------------------------------------------------
-// If your plugin is not a music_sevice don't use this part and delete it
-
-
-irControllerExtended.prototype.addToBrowseSources = function () {
-
-	// Use this function to add your music service plugin to music sources
-    //var data = {name: 'Spotify', uri: 'spotify',plugin_type:'music_service',plugin_name:'spop'};
-    this.commandRouter.volumioAddToBrowseSources(data);
-};
-
-irControllerExtended.prototype.handleBrowseUri = function (curUri) {
-    var self = this;
-
-    //self.commandRouter.logger.info(curUri);
-    var response;
-
-
-    return response;
-};
-
-
-
-// Define a method to clear, add, and play an array of tracks
-irControllerExtended.prototype.clearAddPlayTrack = function(track) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::clearAddPlayTrack');
-
-	self.commandRouter.logger.info(JSON.stringify(track));
-
-	return self.sendSpopCommand('uplay', [track.uri]);
-};
-
-irControllerExtended.prototype.seek = function (timepos) {
-    this.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::seek to ' + timepos);
-
-    return this.sendSpopCommand('seek '+timepos, []);
-};
-
-// Stop
-irControllerExtended.prototype.stop = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::stop');
-
-
-};
-
-// Spop pause
-irControllerExtended.prototype.pause = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::pause');
-
-
-};
-
-// Get state
-irControllerExtended.prototype.getState = function() {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::getState');
-
-
-};
-
-//Parse state
-irControllerExtended.prototype.parseState = function(sState) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::parseState');
-
-	//Use this method to parse the state and eventually send it with the following function
-};
-
-// Announce updated State
-irControllerExtended.prototype.pushState = function(state) {
-	var self = this;
-	self.commandRouter.pushConsoleMessage('[' + Date.now() + '] ' + 'irControllerExtended::pushState');
-
-	return self.commandRouter.servicePushState(state, self.servicename);
-};
-
-
-irControllerExtended.prototype.explodeUri = function(uri) {
-	var self = this;
-	var defer=libQ.defer();
-
-	// Mandatory: retrieve all info for a given URI
-
-	return defer.promise;
-};
-
-irControllerExtended.prototype.getAlbumArt = function (data, path) {
-
-	var artist, album;
-
-	if (data != undefined && data.path != undefined) {
-		path = data.path;
-	}
-
-	var web;
-
-	if (data != undefined && data.artist != undefined) {
-		artist = data.artist;
-		if (data.album != undefined)
-			album = data.album;
-		else album = data.artist;
-
-		web = '?web=' + nodetools.urlEncode(artist) + '/' + nodetools.urlEncode(album) + '/large'
-	}
-
-	var url = '/albumart';
-
-	if (web != undefined)
-		url = url + web;
-
-	if (web != undefined && path != undefined)
-		url = url + '&';
-	else if (path != undefined)
-		url = url + '?';
-
-	if (path != undefined)
-		url = url + 'path=' + nodetools.urlEncode(path);
-
-	return url;
-};
-
-
-
-
-
-irControllerExtended.prototype.search = function (query) {
-	var self=this;
-	var defer=libQ.defer();
-
-	// Mandatory, search. You can divide the search in sections using following functions
-
-	return defer.promise;
-};
-
-irControllerExtended.prototype._searchArtists = function (results) {
-
-};
-
-irControllerExtended.prototype._searchAlbums = function (results) {
-
-};
-
-irControllerExtended.prototype._searchPlaylists = function (results) {
-
-
-};
-
-irControllerExtended.prototype._searchTracks = function (results) {
-
-};
-
-irControllerExtended.prototype.goto=function(data){
-    var self=this
-    var defer=libQ.defer()
-
-// Handle go to artist and go to album function
-
-     return defer.promise;
-};
