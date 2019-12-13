@@ -6,29 +6,34 @@
     {
       "id": "section_account",
       "element": "section",
-      "label": "Spotify account",
-      "icon": "fa-plug",
+      "label": "Remote profile",
+      "icon": "fa-magic",
       "onSave": {
-        "type": "controller",
-        "endpoint": "music_service/spop",
-        "method": "saveSpotifyAccount"
+        "type":"controller",
+        "endpoint":"music_service/spop",
+        "method":"saveSpotifyAccount",
+        "askForConfirm": {
+          "title": "Confirm",
+          "message": "are you sure?"
+        }
       },
       "saveButton": {
-        "label": "Save",
+        "label": "Set this profile",
         "data": [
-          "username",
-          "password",
-          "bitrate"
+          "ir_profile"
         ]
       },
       "content": [
         {
-          "id": "username",
-          "type": "text",
-          "element": "input",
-          "doc": "This is the username of your Spotify account",
-          "label": "Username",
-          "value": ""
+          "id": "ir_profile",
+          "element": "select",
+          "doc": "TRANSLATE.PROFILE_SELECTOR_DOC",
+          "label": "TRANSLATE.PROFILE_SELECTOR",
+          "value":  {
+          },
+          "options": [
+          ]
+
         }
       ]
     }
