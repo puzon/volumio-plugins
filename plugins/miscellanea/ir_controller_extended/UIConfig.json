@@ -10,8 +10,8 @@
       "icon": "fa-magic",
       "onSave": {
         "type":"controller",
-        "endpoint":"music_service/spop",
-        "method":"saveSpotifyAccount",
+        "endpoint":"miscellanea/ir_controller_extended",
+        "method":"setProfile",
         "askForConfirm": {
           "title": "Confirm",
           "message": "are you sure?"

@@ -7,41 +7,45 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 
 
-module.exports = irControllerExtended;
-function irControllerExtended(context) {
-	var self = this;
+module.exports = IrControllerExtended;
+function IrControllerExtended(context) {
+    var self = this;
 
-	this.context = context;
-	this.commandRouter = this.context.coreCommand;
-	this.logger = this.context.logger;
-	this.configManager = this.context.configManager;
+    this.context = context;
+    this.commandRouter = this.context.coreCommand;
+    this.logger = this.context.logger;
+    this.configManager = this.context.configManager;
 
 }
 
-
-
-irControllerExtended.prototype.onVolumioStart = function()
+IrControllerExtended.prototype.setProfile = function()
 {
-	var self = this;
-	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-	this.config = new (require('v-conf'))();
-	this.config.loadFile(configFile);
+    // self.commandRouter.pushToastMessage('success', "Account Login", "Login was successful");
+
+};
+
+IrControllerExtended.prototype.onVolumioStart = function()
+{
+    var self = this;
+    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    this.config = new (require('v-conf'))();
+    this.config.loadFile(configFile);
 
     return libQ.resolve();
 }
 
-irControllerExtended.prototype.onStart = function() {
+IrControllerExtended.prototype.onStart = function() {
     var self = this;
-	var defer=libQ.defer();
+    var defer=libQ.defer();
+    // self.commandRouter.pushToastMessage('success', "Account Login", "Login was successful");
 
-
-	// Once the Plugin has successfull started resolve the promise
-	defer.resolve();
+    // Once the Plugin has successfull started resolve the promise
+    defer.resolve();
 
     return defer.promise;
 };
 
-irControllerExtended.prototype.onStop = function() {
+IrControllerExtended.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
 
@@ -51,7 +55,7 @@ irControllerExtended.prototype.onStop = function() {
     return libQ.resolve();
 };
 
-irControllerExtended.prototype.onRestart = function() {
+IrControllerExtended.prototype.onRestart = function() {
     var self = this;
     // Optional, use if you need it
 };
@@ -59,59 +63,56 @@ irControllerExtended.prototype.onRestart = function() {
 
 // Configuration Methods -----------------------------------------------------------------------------
 
-irControllerExtended.prototype.getUIConfig = function() {
+IrControllerExtended.prototype.getUIConfig = function() {
     var defer = libQ.defer();
     var self = this;
 
     var lang_code = this.commandRouter.sharedVars.get('language_code');
-	var dirs = fs.readdirSync(__dirname + "/configurations");
-	console.log("GET UI");
-	self.logger.info("GET UI");
+    var dirs = fs.readdirSync(__dirname + "/configurations");
 
+    self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
+            __dirname+'/i18n/strings_en.json',
+            __dirname + '/UIConfig.json')
+    .then(function(uiconf)
+    {
 
-	self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
-        __dirname+'/i18n/strings_en.json',
-        __dirname + '/UIConfig.json')
-        .then(function(uiconf)
-        {
+        var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
+        uiconf.sections[0].content[0].value.value = activeProfile;
+        uiconf.sections[0].content[0].value.label = activeProfile;
 
-			var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
-			uiconf.sections[0].content[0].value.value = activeProfile;
-			uiconf.sections[0].content[0].value.label = activeProfile;
-
-			for (var i = 0; i < dirs.length; i++) {
-				self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
-					value: dirs[i],
-					label: dirs[i]
-				});
-			}
-            defer.resolve(uiconf);
-        })
-        .fail(function()
-        {
-            defer.reject(new Error());
-        });
+        for (var i = 0; i < dirs.length; i++) {
+            self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+                value: dirs[i],
+                label: dirs[i]
+            });
+        }
+        defer.resolve(uiconf);
+    })
+    .fail(function()
+    {
+        defer.reject(new Error());
+    });
 
     return defer.promise;
 };
 
-irControllerExtended.prototype.getConfigurationFiles = function() {
-	return ['config.json'];
+IrControllerExtended.prototype.getConfigurationFiles = function() {
+    return ['config.json'];
 }
 
-irControllerExtended.prototype.setUIConfig = function(data) {
-	var self = this;
-	//Perform your installation tasks here
+IrControllerExtended.prototype.setUIConfig = function(data) {
+    var self = this;
+    //Perform your installation tasks here
 };
 
-irControllerExtended.prototype.getConf = function(varName) {
-	var self = this;
-	//Perform your installation tasks here
+IrControllerExtended.prototype.getConf = function(varName) {
+    var self = this;
+    //Perform your installation tasks here
 };
 
-irControllerExtended.prototype.setConf = function(varName, varValue) {
-	var self = this;
-	//Perform your installation tasks here
+IrControllerExtended.prototype.setConf = function(varName, varValue) {
+    var self = this;
+    //Perform your installation tasks here
 };
 
 
