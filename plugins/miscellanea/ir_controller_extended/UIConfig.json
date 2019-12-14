@@ -4,24 +4,18 @@
   },
   "sections": [
     {
-      "id": "section_account",
+      "id": "section_profile",
       "element": "section",
       "label": "Remote profile",
       "icon": "fa-magic",
-      "onSave": {
-        "type":"controller",
-        "endpoint":"miscellanea/ir_controller_extended",
-        "method":"setProfile",
-        "askForConfirm": {
-          "title": "Confirm",
-          "message": "are you sure?"
-        }
-      },
+      "onSave": {"type":"controller", "endpoint":"miscellanea/ir_controller_extended", "method":"saveProfile"},
       "saveButton": {
         "label": "Set this profile",
         "data": [
           "ir_profile"
         ]
+      },
+      "value":  {
       },
       "content": [
         {
@@ -35,6 +29,28 @@
           ]
 
         }
+      ]
+    },
+    {
+      "id": "section_keys",
+      "element": "section",
+      "label": "Assign key",
+      "icon": "fa-magic",
+      "onSave": {
+        "type":"controller",
+        "endpoint":"miscellanea/ir_controller_extended",
+        "method":"saveKeys"
+      },
+      "saveButton": {
+        "label": "Save keys configuration",
+        "data": [
+          "key_KEY_MENU_type"
+        ]
+      },
+      "value":  {
+      },
+      "content": [
+
       ]
     }
   ]

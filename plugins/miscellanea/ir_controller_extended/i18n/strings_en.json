@@ -1,5 +1,31 @@
 {
-  "PLUGIN_CONFIGURATION":"IR Extended plugin configuration",
-  "SAVE":"Save",
-  "SET_PROFILE":"Set this profile"
+  "PLUGIN_CONFIGURATION": "IR Extended plugin configuration",
+  "SAVE": "Save",
+  "SET_PROFILE": "Set this profile",
+  "ACTIONS": {
+    "NO_ACTION": "No action",
+    "VOLUMIO_ACTION": "Volumio action",
+    "PLAYLIST": "Playlist",
+    "EXEC": "Exec"
+  },
+  "VOLUMIO_ACTION": {
+    "LABEL": "Volumio action",
+    "ACTION_TOGGLE": "Toggle",
+    "ACTION_PLAY": "Play",
+    "ACTION_PAUSE": "Pause",
+    "ACTION_NEXT": "Next",
+    "ACTION_PREVIOUS": "Previous",
+    "ACTION_STOP": "Stop",
+    "ACTION_CLEAR": "Clear",
+    "ACTION_SEEK_PLUS": "+10 sec",
+    "ACTION_SEEK_MINUS": "-10 sec",
+    "ACTION_REPEAT": "Repeat",
+    "ACTION_RANDOM": "Random"
+  },
+  "PLAYLIST": {
+    "LABEL": "Playlist"
+  },
+  "EXEC": {
+    "LABEL": "Execute command"
+  }
 }

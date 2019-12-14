@@ -1,5 +1,31 @@
 {
   "PLUGIN_CONFIGURATION":"Konfiguracja pluginu IR Extended",
   "SAVE":"Save",
-  "SET_PROFILE":"Ustaw ten profil"
+  "SET_PROFILE":"Ustaw ten profil",
+  "ACTIONS": {
+    "NO_ACTION": "No action",
+    "VOLUMIO_ACTION": "Volumio action",
+    "PLAYLIST": "Playlist",
+    "EXEC": "Exec"
+  },
+  "VOLUMIO_ACTION": {
+    "LABEL": "Akcja Volumio",
+    "ACTION_TOGGLE": "Przełącz",
+    "ACTION_PLAY": "Odtwórz",
+    "ACTION_PAUSE": "Pauza",
+    "ACTION_NEXT": "Następny",
+    "ACTION_PREVIOUS": "Poprzedni",
+    "ACTION_STOP": "Stop",
+    "ACTION_CLEAR": "Wyczyść playlistę",
+    "ACTION_SEEK_PLUS": "+10 sekund",
+    "ACTION_SEEK_MINUS": "-10 sekund",
+    "ACTION_REPEAT": "Powtarzaj",
+    "ACTION_RANDOM": "Random"
+  },
+  "PLAYLIST": {
+    "LABEL": "Playlista"
+  },
+  "EXEC": {
+    "LABEL": "Wykonaj komendę"
+  }
 }

@@ -4,7 +4,7 @@
 	"description": "Extended IR controller plugin that allows assigning codes to custom actions.",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "mocha"
 	},
 	"author": "Michael Blaumann",
 	"license": "ISC",
@@ -16,6 +16,8 @@
 	"dependencies": {
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
+		"underscore": "^1.9.1",
 		"v-conf": "^1.4.0"
-	}
+	},
+	"devDependencies": {}
 }

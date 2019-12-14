@@ -1,0 +1,73 @@
+### Playback commands ###
+begin
+prog = irexec
+button = KEY_PLAYPAUSE
+config = /usr/local/bin/volumio toggle
+end
+begin
+prog = irexec
+button = KEY_STOP
+config = /usr/local/bin/volumio stop
+end
+begin
+prog = irexec
+button = KEY_PREVIOUSSONG
+config = /usr/local/bin/volumio previous
+end
+begin
+prog = irexec
+button = KEY_NEXTSONG
+config = /usr/local/bin/volumio next
+end
+begin
+prog = irexec
+button = KEY_FORWARD_UNDEF
+config = /usr/local/bin/volumio seek plus
+end
+begin
+prog = irexec
+button = KEY_REWIND_UNDEF
+config = /usr/local/bin/volumio seek minus
+end
+begin
+prog = irexec
+button = KEY_CLEAR
+config = /usr/local/bin/volumio clear
+end
+begin
+prog = irexec
+button = RANDOM
+config = /usr/local/bin/volumio random
+end
+begin
+prog = irexec
+button = REPEAT
+config = /usr/local/bin/volumio repeat
+end
+### Playlist commands ###
+begin
+prog = irexec
+button = KEY_FORWARD
+config = /usr/bin/curl -s -d '{"item":{"service":"webradio","type":"webradio","title":"Radio MUZO.FM","icon":"fa fa-microphone","uri":"http://opml.radiotime.com/Tune.ashx?id=s65945"}}' -H "Content-Type: application/json" -X POST http://localhost:3000/api/v1/replaceAndPlay > /dev/null
+end
+begin
+prog = irexec
+button = KEY_REWIND
+config = /usr/bin/curl -s -X GET "http://localhost:3000/api/v1/commands/?cmd=playplaylist&name=Fallout" > /dev/null
+end
+### Volume commands ###
+begin
+prog = irexec
+button = KEY_VOLUMEUP
+config = /usr/local/bin/volumio volume plus
+end
+begin
+prog = irexec
+button = KEY_VOLUMEDOWN
+config = /usr/local/bin/volumio volume minus
+end
+begin
+prog = irexec
+button = KEY_MUTE
+config = /usr/local/bin/volumio volume mute
+end
