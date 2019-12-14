@@ -1,36 +1,34 @@
 'use strict';
 
-var libQ = require('kew');
-var fs=require('fs-extra');
-var config = new (require('v-conf'))();
-var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
-var _ = require('underscore');
-var LircLib = require('./libs/LircLib');
-var i18nLib = require('./libs/i18nLib');
-var ObjectUtils = require('./libs/ObjectUtils');
-
+const libQ = require('kew');
+const fs=require('fs-extra');
+const config = new (require('v-conf'))();
+const exec = require('child_process').exec;
+const execSync = require('child_process').execSync;
+const _ = require('underscore');
+const LircLib = require('./libs/LircLib');
+const i18nLib = require('./libs/i18nLib');
+const ObjectUtils = require('./libs/ObjectUtils');
 
 
 module.exports = IrControllerExtended;
 function IrControllerExtended(context) {
-    var self = this;
+    let self = this;
 
     this.context = context;
     this.commandRouter = this.context.coreCommand;
     this.logger = this.context.logger;
     this.configManager = this.context.configManager;
-
 }
 
 IrControllerExtended.prototype.saveProfile = function(data)
 {
-    var self = this;
+    let self = this;
 
     self.config.set("ir_profile", data.ir_profile.value);
 
 
-    var respconfig = self.commandRouter.getUIConfigOnPlugin('miscellanea', 'ir_controller_extended', {});
+    let respconfig = self.commandRouter.getUIConfigOnPlugin('miscellanea', 'ir_controller_extended', {});
 
     respconfig.then(function(config)
     {
@@ -40,12 +38,13 @@ IrControllerExtended.prototype.saveProfile = function(data)
 
 
 };
-IrControllerExtended.prototype.saveKeys = function(data) {
-    var self = this;
 
-    // var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+IrControllerExtended.prototype.saveKeys = function(data) {
+    let self = this;
+
+    // let configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     // self.commandRouter.pushToastMessage('success', 'configFile', configFile);
-    for(var i in data) {
+    for(let i in data) {
         if(data.hasOwnProperty(i)) {
             self.config.set(i, data[i].value);
             // self.commandRouter.pushToastMessage('success', i, JSON.stringify(self.config.data));
@@ -59,8 +58,8 @@ IrControllerExtended.prototype.saveKeys = function(data) {
 
 IrControllerExtended.prototype.onVolumioStart = function()
 {
-    var self = this;
-    var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    let self = this;
+    let configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
 
@@ -68,8 +67,8 @@ IrControllerExtended.prototype.onVolumioStart = function()
 };
 
 IrControllerExtended.prototype.onStart = function() {
-    var self = this;
-    var defer=libQ.defer();
+    let self = this;
+    let defer=libQ.defer();
     // self.commandRouter.pushToastMessage('success', "Account Login", "Login was successful");
 
     // Once the Plugin has successfull started resolve the promise
@@ -79,8 +78,8 @@ IrControllerExtended.prototype.onStart = function() {
 };
 
 IrControllerExtended.prototype.onStop = function() {
-    var self = this;
-    var defer=libQ.defer();
+    let self = this;
+    let defer=libQ.defer();
 
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
@@ -89,7 +88,7 @@ IrControllerExtended.prototype.onStop = function() {
 };
 
 IrControllerExtended.prototype.onRestart = function() {
-    var self = this;
+    let self = this;
     // Optional, use if you need it
 };
 
@@ -97,11 +96,11 @@ IrControllerExtended.prototype.onRestart = function() {
 // Configuration Methods -----------------------------------------------------------------------------
 
 IrControllerExtended.prototype.getUIConfig = function() {
-    var defer = libQ.defer();
-    var self = this;
+    let defer = libQ.defer();
+    let self = this;
 
-    var lang_code = this.commandRouter.sharedVars.get('language_code');
-    var dirs = fs.readdirSync(__dirname + "/configurations");
+    let lang_code = this.commandRouter.sharedVars.get('language_code');
+    let dirs = fs.readdirSync(__dirname + "/configurations");
 
     self.commandRouter.pushToastMessage('info', "Loading data...");
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
@@ -116,11 +115,11 @@ IrControllerExtended.prototype.getUIConfig = function() {
             self.playlists = playlists;
             // self.logger.info('[' + Date.now() + '] ' + 'Playlists: ' + JSON.stringify(playlists));
 
-            var activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
+            let activeProfile = self.config.get("ir_profile", "JustBoom IR Remote");
             uiconf.sections[0].content[0].value.value = activeProfile;
             uiconf.sections[0].content[0].value.label = activeProfile;
 
-            for (var i = 0; i < dirs.length; i++) {
+            for (let i = 0; i < dirs.length; i++) {
                 self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
                     value: dirs[i],
                     label: dirs[i]
@@ -154,13 +153,13 @@ IrControllerExtended.prototype.getUIConfig = function() {
 
 IrControllerExtended.prototype.pushKeysConfig = function(uiconf, activeProfile) {
 
-    var self = this;
-    var lircd = fs.readFileSync(__dirname + "/configurations/" + activeProfile + "/lircd.conf");
-    var keys = LircLib.getKeys(lircd.toString());
+    let self = this;
+    let lircd = fs.readFileSync(__dirname + "/configurations/" + activeProfile + "/lircd.conf");
+    let keys = LircLib.getKeys(lircd.toString());
 
-    for(var key of keys) {
-        var keyConfig = this.getKeyConfig(key, activeProfile);
-        for(var conf of keyConfig) {
+    for(let key of keys) {
+        let keyConfig = this.getKeyConfig(key, activeProfile);
+        for(let conf of keyConfig) {
             // this.commandRouter.translateKeys(conf);
             self.configManager.pushUIConfigParam(uiconf, 'sections[1].saveButton.data', conf.id);
             self.configManager.pushUIConfigParam(uiconf, 'sections[1].content', conf);
@@ -169,9 +168,9 @@ IrControllerExtended.prototype.pushKeysConfig = function(uiconf, activeProfile) 
 };
 
 IrControllerExtended.prototype.getPlaylistsOptions = function() {
-    var self = this;
-    var list = {};
-    for(var e of self.playlists) {
+    let self = this;
+    let list = {};
+    for(let e of self.playlists) {
         list[e] = e;
     }
     // list[0] = "None";
@@ -179,30 +178,30 @@ IrControllerExtended.prototype.getPlaylistsOptions = function() {
 };
 
 IrControllerExtended.prototype.getKeyConfig = function(key, remoteName) {
-    var self = this;
-    var keyIdPrefix = remoteName ? remoteName + "_" : "";
+    let self = this;
+    let keyIdPrefix = remoteName ? remoteName + "_" : "";
 
-    var typeId = `${keyIdPrefix}key_${key}_type`;
-    var volumioActionId = `${keyIdPrefix}key_${key}_volumioAction`;
-    var playlistId = `${keyIdPrefix}key_${key}_playlist`;
-    var execId = `${keyIdPrefix}key_${key}_exec`;
+    let typeId = `${keyIdPrefix}key_${key}_type`;
+    let volumioActionId = `${keyIdPrefix}key_${key}_volumioAction`;
+    let playlistId = `${keyIdPrefix}key_${key}_playlist`;
+    let execId = `${keyIdPrefix}key_${key}_exec`;
 
-    var typeValue = self.config.get(typeId, 0);
-    var volumioActionValue = self.config.get(volumioActionId, 0);
-    var playlistValue = self.config.get(playlistId, self.playlists.length ? self.playlists[0] : 0);
-    var execValue = self.config.get(execId, '');
+    let typeValue = self.config.get(typeId, 0);
+    let volumioActionValue = self.config.get(volumioActionId, 0);
+    let playlistValue = self.config.get(playlistId, self.playlists.length ? self.playlists[0] : 0);
+    let execValue = self.config.get(execId, '');
 
 
-    var keyLabel = key.replace("KEY_", "");
+    let keyLabel = key.replace("KEY_", "");
 
-    var typeOptions = {
+    let typeOptions = {
         0: "TRANSLATE.ACTIONS.NO_ACTION",
         1: "TRANSLATE.ACTIONS.VOLUMIO_ACTION",
         2: "TRANSLATE.ACTIONS.PLAYLIST",
         3: "TRANSLATE.ACTIONS.EXEC"
     };
 
-    var actionsOptions = {
+    let actionsOptions = {
         0: "TRANSLATE.VOLUMIO_ACTION.ACTION_TOGGLE",
         1: "TRANSLATE.VOLUMIO_ACTION.ACTION_PLAY",
         2: "TRANSLATE.VOLUMIO_ACTION.ACTION_PAUSE",
@@ -216,14 +215,14 @@ IrControllerExtended.prototype.getKeyConfig = function(key, remoteName) {
         10: "TRANSLATE.VOLUMIO_ACTION.ACTION_RANDOM",
     };
 
-    var playlistsOptions = self.getPlaylistsOptions();
+    let playlistsOptions = self.getPlaylistsOptions();
 
     typeValue = JSON.stringify({value: typeValue, label: typeOptions[typeValue]});
     volumioActionValue = JSON.stringify({value: volumioActionValue, label: actionsOptions[volumioActionValue]});
     playlistValue = JSON.stringify({value: playlistValue, label: playlistsOptions[playlistValue]});
 
 
-    var template = `[{
+    let template = `[{
           "id": "${typeId}",
           "element": "select",
           "doc": "TRANSLATE.PROFILE_SELECTOR_DOC",
@@ -256,7 +255,7 @@ IrControllerExtended.prototype.getKeyConfig = function(key, remoteName) {
             {"placeholder": "Enter linux command exec"}
           ]
         }]`;
-    var data = JSON.parse(template);
+    let data = JSON.parse(template);
     data[0].options = ObjectUtils.simpleArrayToObjectArray(typeOptions, 'value', 'label');
     data[1].options = ObjectUtils.simpleArrayToObjectArray(actionsOptions, 'value', 'label');
     data[2].options = ObjectUtils.simpleArrayToObjectArray(playlistsOptions, 'value', 'label');
@@ -266,23 +265,22 @@ IrControllerExtended.prototype.getKeyConfig = function(key, remoteName) {
 
 IrControllerExtended.prototype.getConfigurationFiles = function() {
     return ['config.json'];
-}
+};
+
 /*
 IrControllerExtended.prototype.setUIConfig = function(data) {
-    var self = this;
+    let self = this;
     //Perform your installation tasks here
 };*/
 /*
 
 IrControllerExtended.prototype.getConf = function(varName) {
-    var self = this;
+    let self = this;
     //Perform your installation tasks here
 };
 
 IrControllerExtended.prototype.setConf = function(varName, varValue) {
-    var self = this;
+    let self = this;
     //Perform your installation tasks here
 };
 */
-
-
