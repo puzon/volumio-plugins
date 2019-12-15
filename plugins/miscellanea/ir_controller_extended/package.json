@@ -16,6 +16,7 @@
 	"dependencies": {
 		"fs-extra": "^0.28.0",
 		"kew": "^0.7.0",
+		"mustache": "^3.1.0",
 		"underscore": "^1.9.1",
 		"v-conf": "^1.4.0"
 	},

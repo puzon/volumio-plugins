@@ -1,7 +1,8 @@
 
-var LircLib = require('../libs/LircLib');
-var fs=require('fs-extra');
-var assert = require('assert');
+const LircLib = require('../libs/LircLib');
+const fs=require('fs-extra');
+const libQ = require('kew');
+const assert = require('assert');
 
 // var remote = "Denon Remote RC-1104";
 var remote = "Arcam ir-DAC-II Remote";
@@ -15,6 +16,7 @@ var remote = "Arcam ir-DAC-II Remote";
     console.log("Cannot open remote: " + remote, e);
 }*/
 
+
 var testRemoteFn = function(remote, cnt) {
     return function() {
         var lircd = fs.readFileSync(__dirname + "/assets/configurations/" + remote + "/lircd.conf");
@@ -22,6 +24,19 @@ var testRemoteFn = function(remote, cnt) {
         assert.equal(keys.length, cnt);
     }
 };
+
+describe('libQ', function() {
+    let res = false;
+    let promise = libQ.resolve(true)
+    it('should resolve', function () {
+        // promise.resolve(true);
+        promise.then(function (data) {
+            assert.equal(data, true);
+        });
+    });
+
+
+});
 
 describe('LircLib', function() {
     describe('#getKeys()', function() {
