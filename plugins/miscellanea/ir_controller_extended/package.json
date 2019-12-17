@@ -9,8 +9,8 @@
 	"author": "Michael Blaumann",
 	"license": "ISC",
 	"volumio_info": {
-		"prettyName": "IR Controller Extended",
-		"icon": "fa-lightbulb-o",
+		"prettyName": "IR Remote Controller Extended",
+		"icon": "fa-magic",
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {

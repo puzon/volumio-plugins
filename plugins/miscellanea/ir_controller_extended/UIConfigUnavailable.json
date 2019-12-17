@@ -1,0 +1,23 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+    {
+      "id": "section_profile",
+      "element": "section",
+      "label": "Unavailable",
+      "icon": "fa-magic",
+      "value":  {
+      },
+      "content": [
+        {
+          "id": "username",
+          "doc": "Please first install \"IR Remote Controller\" plugin",
+          "label": "This plugin requires the \"IR Remote Controller\" plugin to work",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ const path=require('path');
 const _ = require('underscore');
 const LircLib = require('../libs/LircLib');
 const i18nLib = require('../libs/i18nLib');
+const Config = require('./Config');
 const ObjectUtils = require('../libs/ObjectUtils');
 const VolumioActions = require('./VolumioActions');
 const PlaylistsActions = require('./PlaylistsActions');
@@ -16,11 +17,26 @@ function ConfigUI(plugin) {
     this.logger = this.context.logger;
     this.configManager = this.context.configManager;
 
-    this.actions = {
-        'volumioActions': new VolumioActions(this.plugin.context),
-        'playlistsActions': new PlaylistsActions(this.plugin.context),
-    };
 }
+ConfigUI.prototype.getUnavailableUI = function () {
+    let self = this;
+    // let configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
+    // self.commandRouter.pushToastMessage('info', "configFile", configFile);
+
+    let defer = libQ.defer();
+
+    let root = path.resolve(__dirname, "../");
+
+    let lang_code = this.commandRouter.sharedVars.get('language_code');
+    self.commandRouter.i18nJson(path.resolve(root,'i18n', 'strings_'+lang_code+'.json'),
+            path.resolve(root,'i18n', 'strings_en.json'),
+            path.resolve(root, 'UIConfigUnavailable.json'))
+    .then(function(uiconf)
+    {
+        defer.resolve(uiconf);
+    });
+    return defer.promise;
+};
 
 ConfigUI.prototype.getUI = function () {
     let self = this;
@@ -32,7 +48,7 @@ ConfigUI.prototype.getUI = function () {
     let root = path.resolve(__dirname, "../");
 
     let lang_code = this.commandRouter.sharedVars.get('language_code');
-    let dirs = fs.readdirSync( path.resolve(root, "configurations"));
+    let dirs = fs.readdirSync( path.resolve(Config.IR_REMOTE_PATH, "configurations"));
 
     self.commandRouter.pushToastMessage('info', "Loading data...");
     self.commandRouter.i18nJson(path.resolve(root,'i18n', 'strings_'+lang_code+'.json'),
@@ -48,10 +64,12 @@ ConfigUI.prototype.getUI = function () {
                 uiconf.sections[0].content[0].value.label = activeProfile;
 
                 for (let i = 0; i < dirs.length; i++) {
-                    self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
-                        value: dirs[i],
-                        label: dirs[i]
-                    });
+                    if(dirs[i] != Config.CUSTOM_REMOTE_NAME) {
+                        self.configManager.pushUIConfigParam(uiconf, 'sections[0].content[0].options', {
+                            value: dirs[i],
+                            label: dirs[i]
+                        });
+                    }
                 }
 
                 self.pushKeysConfig(uiconf, activeProfile)
@@ -87,16 +105,15 @@ ConfigUI.prototype.getUI = function () {
 ConfigUI.prototype.pushKeysConfig = function(uiconf, activeProfile) {
 
     let self = this;
-    let lircd = fs.readFileSync(path.resolve(__dirname, "../", "configurations", activeProfile, "lircd.conf"));
+    let lircd = fs.readFileSync(path.resolve(Config.IR_REMOTE_PATH, "configurations", activeProfile, "lircd.conf"));
     let keys = LircLib.getKeys(lircd.toString());
     let methodDefer = libQ.defer();
     try {
         let defers = [];
-        for (let at in self.actions) {
-            defers.push(self.actions[at].update());//libQ.ncall(self.actions[at].update, self.actions[at]));
+        for (let at in self.plugin.actions) {
+            defers.push(self.plugin.actions[at].update());//libQ.ncall(self.plugin.actions[at].update, self.plugin.actions[at]));
         }
 
-        // defers.push(libQ.nfcall(fs.readJson,dictionaryFile));
 
         self.logger.info('[' + Date.now() + '] ' + 'Executing ' + defers.length + ' actions...');
         libQ.all(defers).then(function (actions) {
@@ -127,27 +144,27 @@ ConfigUI.prototype.getKeyConfig = function(key, remoteName) {
     let keyIdPrefix = remoteName ? remoteName + "_" : "";
 
 
-    let actionsOptions = self.actions.volumioActions.getOptionsList();
-    let playlistsOptions = self.actions.playlistsActions.getOptionsList();
+    let actionsOptions = self.plugin.actions.volumioActions.getOptionsList();
+    let playlistsOptions = self.plugin.actions.playlistsActions.getOptionsList();
 
     let typeId = `${keyIdPrefix}key_${key}_type`;
     let volumioActionId = `${keyIdPrefix}key_${key}_volumioAction`;
     let playlistId = `${keyIdPrefix}key_${key}_playlist`;
     let execId = `${keyIdPrefix}key_${key}_exec`;
 
-    let typeValue = self.plugin.config.get(typeId, 0);
+    let typeValue = self.plugin.config.get(typeId, "no_action");
     let volumioActionValue = self.plugin.config.get(volumioActionId, 'toggle');
-    let playlistValue = self.plugin.config.get(playlistId, playlistsOptions.length ? playlistsOptions[0] : 0);
+    let playlistValue = self.plugin.config.get(playlistId, playlistsOptions.length ? playlistsOptions[0] : "");
     let execValue = self.plugin.config.get(execId, '');
 
 
     let keyLabel = key.replace("KEY_", "");
 
     let typeOptions = {
-        0: "TRANSLATE.ACTIONS.NO_ACTION",
-        1: "TRANSLATE.ACTIONS.VOLUMIO_ACTION",
-        2: "TRANSLATE.ACTIONS.PLAYLIST",
-        3: "TRANSLATE.ACTIONS.EXEC"
+        "no_action": "TRANSLATE.ACTIONS.NO_ACTION",
+        "volumio_action": "TRANSLATE.ACTIONS.VOLUMIO_ACTION",
+        "playlist_action": "TRANSLATE.ACTIONS.PLAYLIST",
+        "exec_action": "TRANSLATE.ACTIONS.EXEC"
     };
 
     typeValue = JSON.stringify({value: typeValue, label: typeOptions[typeValue]});
@@ -169,14 +186,16 @@ ConfigUI.prototype.getKeyConfig = function(key, remoteName) {
           "element": "select",
           "description": "TRANSLATE.VOLUMIO_ACTION.LABEL",
           "value":  ${volumioActionValue},
-          "options": []
+          "options": [],
+          "visibleIf": {"field" :"${typeId}", "value": "volumio_action"}
         },
         {
           "id": "${playlistId}",
           "element": "select",
           "description": "TRANSLATE.PLAYLIST.LABEL",
           "value":  ${playlistValue},
-          "options": []
+          "options": [],
+          "visibleIf": {"field" :"${typeId}", "value": "playlist_action"}
         },
         {
           "id": "${execId}",
@@ -184,6 +203,7 @@ ConfigUI.prototype.getKeyConfig = function(key, remoteName) {
           "type": "text",
           "description": "TRANSLATE.EXEC.LABEL",
           "value":  "",
+          "visibleIf": {"field" :"${typeId}", "value": "exec_action"},
           "attributes:": [
             {"placeholder": "Enter linux command exec"}
           ]
