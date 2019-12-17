@@ -142,8 +142,8 @@ IrControllerExtended.prototype.generateLircConfig = function()
             k.command = self.actions.playlistsActions.getCommandForOption(playlistValue);
         } else if (k.type === "exec_action") {
             let execValue = self.config.get(execId, 0);
-            self.logger.info('[' + Date.now() + '] ' + 'Get command for playlist: ' + execValue);
-            k.command = self.actions.playlistsActions.getCommandForOption(execValue);
+            self.logger.info('[' + Date.now() + '] ' + 'Get command for exec: ' + execValue);
+            k.command = execValue;
         }
         if(k.command) {
             keysConfig.push(k);
