@@ -156,7 +156,15 @@ ConfigUI.prototype.getKeyConfig = function(key, remoteName) {
     let volumioActionValue = self.plugin.config.get(volumioActionId, 'toggle');
     let playlistValue = self.plugin.config.get(playlistId, playlistsOptions.length ? playlistsOptions[0] : "");
     let execValue = self.plugin.config.get(execId, '');
-
+    let execValueString = JSON.stringify(execValue);
+    var execEscapedJSONString = execValueString.replace(/\\n/g, "\\n")
+        .replace(/\\'/g, "\\'")
+        .replace(/\\"/g, '\\"')
+        .replace(/\\&/g, "\\&")
+        .replace(/\\r/g, "\\r")
+        .replace(/\\t/g, "\\t")
+        .replace(/\\b/g, "\\b")
+        .replace(/\\f/g, "\\f");
 
     let keyLabel = key.replace("KEY_", "");
 
@@ -202,7 +210,7 @@ ConfigUI.prototype.getKeyConfig = function(key, remoteName) {
           "element": "input",
           "type": "text",
           "description": "TRANSLATE.EXEC.LABEL",
-          "value":  "",
+          "value":  ${execEscapedJSONString},
           "visibleIf": {"field" :"${typeId}", "value": "exec_action"},
           "attributes:": [
             {"placeholder": "Enter linux command exec"}

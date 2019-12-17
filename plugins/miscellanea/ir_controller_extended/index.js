@@ -69,7 +69,12 @@ IrControllerExtended.prototype.saveKeys = function(data) {
                 // self.commandRouter.pushToastMessage('success', 'configFile', configFile);
                 for (let i in data) {
                     if (data.hasOwnProperty(i)) {
-                        self.config.set(i, data[i].value);
+                        // self.logger.info('[' + Date.now() + '] ' + i + ": " + data[i]);
+                        let val = data[i];
+                        if(typeof val === 'object' && val.hasOwnProperty('value')) {
+                            val = val.value;
+                        }
+                        self.config.set(i, val);
                     }
                 }
                 self.generateLircConfig()
@@ -184,7 +189,7 @@ IrControllerExtended.prototype.onVolumioStart = function()
 {
     let self = this;
     let configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
-    self.commandRouter.pushToastMessage('info', "configFile", configFile);
+    // self.commandRouter.pushToastMessage('info', "configFile", configFile);
 
     this.config = new (require('v-conf'))();
     this.config.loadFile(configFile);
